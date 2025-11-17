@@ -72,3 +72,4 @@ Players.PlayerAdded:Connect(function(plr)
         createBeam(char)
     end)
 end)
+

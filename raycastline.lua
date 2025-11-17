@@ -1,40 +1,51 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
-local RANGE = 10
-local WIDTH = 0.3
-local COLOR = ColorSequence.new(Color3.fromRGB(0, 255, 0))
-local OFFSET_Y = 2 -- HRPより上（頭くらい）
+local LENGTH = 8
+local WIDTH = 0.1
+local HEIGHT = 0.1
+local OFFSET_Y = 2 -- HRP の頭あたり
+local COLOR = Color3.fromRGB(0, 255, 0)
 
-local function createBeam(character)
+local function createLaser(character)
     local hrp = character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
-    -- 終点パート
-    local endPart = Instance.new("Part")
-    endPart.Size = Vector3.new(0.1, 0.1, 0.1)
-    endPart.Transparency = 1
-    endPart.CanCollide = false
-    endPart.Anchored = true
-    endPart.Name = "__BeamEnd"
-    endPart.Parent = workspace
+    local laser = Instance.new("Part")
+    laser.Size = Vector3.new(WIDTH, HEIGHT, LENGTH)
+    laser.Anchored = true
+    laser.CanCollide = false
+    laser.Color = COLOR
+    laser.Material = Enum.Material.Neon
+    laser.Name = "__LaserBar"
+    laser.Parent = workspace
 
-    -- Attachment0（頭の位置に調整）
-    local a1 = Instance.new("Attachment")
-    a1.Name = "LaserStart"
-    a1.Parent = hrp
-    a1.Position = Vector3.new(0, OFFSET_Y, 0)
+    RunService.RenderStepped:Connect(function()
+        if not hrp.Parent then return end
 
-    -- Attachment1
-    local a2 = Instance.new("Attachment")
-    a2.Name = "LaserEnd"
-    a2.Parent = endPart
+        local startPos = hrp.Position + Vector3.new(0, OFFSET_Y, 0)
+        local look = hrp.CFrame.LookVector
 
-    -- Beam
-    local beam = Instance.new("Beam")
-    beam.Attachment0 = a1
-    beam.Attachment1 = a2
-    beam.Width0 = WIDTH
+        -- 中心を HRP から L/2 後ろにずらす
+        local center = startPos + look * (LENGTH / 2)
+        laser.CFrame = CFrame.lookAt(center, startPos) -- startPos に向ける
+    end)
+end
+
+for _, plr in ipairs(Players:GetPlayers()) do
+    if plr.Character then createLaser(plr.Character) end
+    plr.CharacterAdded:Connect(function(char)
+        char:WaitForChild("HumanoidRootPart")
+        createLaser(char)
+    end)
+end
+
+Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function(char)
+        char:WaitForChild("HumanoidRootPart")
+        createLaser(char)
+    end)
+end)    beam.Width0 = WIDTH
     beam.Width1 = WIDTH
     beam.Color = COLOR
     beam.Transparency = NumberSequence.new(0) -- 濃い

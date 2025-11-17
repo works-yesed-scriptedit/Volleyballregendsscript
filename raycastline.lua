@@ -45,42 +45,4 @@ Players.PlayerAdded:Connect(function(plr)
         char:WaitForChild("HumanoidRootPart")
         createLaser(char)
     end)
-end)    beam.Width0 = WIDTH
-    beam.Width1 = WIDTH
-    beam.Color = COLOR
-    beam.Transparency = NumberSequence.new(0) -- 濃い
-    beam.FaceCamera = false
-    beam.LightInfluence = 0
-    beam.Segments = 1
-    beam.Parent = hrp -- どこでも OK
-
-    -- 位置更新
-    RunService.RenderStepped:Connect(function()
-        if not hrp.Parent then return end
-
-        -- 頭の位置
-        local origin = hrp.Position + Vector3.new(0, OFFSET_Y, 0)
-        a1.Position = Vector3.new(0, OFFSET_Y, 0) -- ずっと同じ位置
-
-        -- 前へ8スタッド
-        local target = hrp.Position + Vector3.new(0, OFFSET_Y, 0) + hrp.CFrame.LookVector * RANGE
-        endPart.CFrame = CFrame.new(target)
-    end)
-end
-
--- 全プレイヤーに適用
-for _, plr in ipairs(Players:GetPlayers()) do
-    if plr.Character then createBeam(plr.Character) end
-    plr.CharacterAdded:Connect(function(char)
-        char:WaitForChild("HumanoidRootPart")
-        createBeam(char)
-    end)
-end
-
-Players.PlayerAdded:Connect(function(plr)
-    plr.CharacterAdded:Connect(function(char)
-        char:WaitForChild("HumanoidRootPart")
-        createBeam(char)
-    end)
 end)
-

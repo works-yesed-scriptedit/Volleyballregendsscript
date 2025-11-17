@@ -1,8 +1,8 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
-local RANGE = 8
-local WIDTH = 0.1
+local RANGE = 10
+local WIDTH = 0.3
 local COLOR = ColorSequence.new(Color3.fromRGB(0, 255, 0))
 local OFFSET_Y = 2 -- HRPより上（頭くらい）
 
